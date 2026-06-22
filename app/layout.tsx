@@ -47,9 +47,12 @@ export default function RootLayout({
             <div className="max-w-2xl mx-auto px-6 flex items-center justify-between">
               <Link
                 href="/"
-                className="text-xl font-semibold tracking-tight hover:opacity-70 transition-opacity"
+                className="flex items-center gap-3 hover:opacity-70 transition-opacity"
               >
-                Samuel el Mono
+                <span className="w-9 h-9 rounded-full bg-[var(--foreground)] text-[var(--background)] flex items-center justify-center text-xs font-semibold tracking-wide shrink-0">
+                  SM
+                </span>
+                <span className="text-xl font-semibold tracking-tight">Samuel el Mono</span>
               </Link>
               <nav className="flex items-center gap-4 text-sm text-[var(--muted)]">
                 <Link href="/" className="hover:text-[var(--foreground)] transition-colors">
