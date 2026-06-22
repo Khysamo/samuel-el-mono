@@ -13,7 +13,7 @@ export default function AdminClient({ posts }: { posts: Post[] }) {
   const [secret, setSecret] = useState("");
   const [authed, setAuthed] = useState(false);
   const [sending, setSending] = useState<string | null>(null);
-  const [results, setResults] = useState<Record<string, "success" | "error">>({});
+  const [results, setResults] = useState<Record<string, { status: "success" | "error"; message?: string }>>({});
 
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -27,7 +27,13 @@ export default function AdminClient({ posts }: { posts: Post[] }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ slug, secret }),
     });
-    setResults((prev) => ({ ...prev, [slug]: res.ok ? "success" : "error" }));
+    const body = await res.json();
+    setResults((prev) => ({
+      ...prev,
+      [slug]: res.ok
+        ? { status: "success" }
+        : { status: "error", message: body.error + (body.detail ? `: ${JSON.stringify(body.detail)}` : "") },
+    }));
     setSending(null);
   }
 
@@ -74,10 +80,12 @@ export default function AdminClient({ posts }: { posts: Post[] }) {
               <p className="font-medium text-[var(--foreground)] truncate">{post.title}</p>
             </div>
 
-            {results[post.slug] === "success" ? (
+            {results[post.slug]?.status === "success" ? (
               <span className="text-sm text-green-500 shrink-0">✓ Enviado</span>
-            ) : results[post.slug] === "error" ? (
-              <span className="text-sm text-red-500 shrink-0">Error</span>
+            ) : results[post.slug]?.status === "error" ? (
+              <span className="text-sm text-red-500 shrink-0 max-w-xs text-right">
+                {results[post.slug].message ?? "Error desconocido"}
+              </span>
             ) : (
               <button
                 onClick={() => handleSend(post.slug)}
