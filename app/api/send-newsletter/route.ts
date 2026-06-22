@@ -64,13 +64,15 @@ export async function POST(request: Request) {
   });
 
   if (error || !data) {
-    return NextResponse.json({ error: "Error al crear el broadcast" }, { status: 500 });
+    console.error("Error creando broadcast:", error);
+    return NextResponse.json({ error: "Error al crear el broadcast", detail: error }, { status: 500 });
   }
 
   const { error: sendError } = await resend.broadcasts.send(data.id);
 
   if (sendError) {
-    return NextResponse.json({ error: "Error al enviar el broadcast" }, { status: 500 });
+    console.error("Error enviando broadcast:", sendError);
+    return NextResponse.json({ error: "Error al enviar el broadcast", detail: sendError }, { status: 500 });
   }
 
   return NextResponse.json({ success: true, broadcastId: data.id });
