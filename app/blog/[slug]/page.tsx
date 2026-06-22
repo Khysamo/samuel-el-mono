@@ -3,6 +3,7 @@ import { getPost, getAllPosts } from "@/lib/posts";
 import { formatDate } from "@/lib/utils";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { notFound } from "next/navigation";
+import ShareButton from "@/components/ShareButton";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -78,6 +79,19 @@ export default async function PostPage({
         <div className="prose prose-stone max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-[var(--foreground)] prose-a:underline-offset-4 prose-p:leading-8 prose-p:text-[var(--foreground)] prose-li:text-[var(--foreground)]">
           <MDXRemote source={post.content} />
         </div>
+
+        <footer className="mt-12 pt-8 border-t border-[var(--border)] flex items-center justify-between">
+          <Link
+            href="/"
+            className="text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            ← Todos los posts
+          </Link>
+          <ShareButton
+            title={post.title}
+            url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://samuel-el-mono.vercel.app"}/blog/${slug}`}
+          />
+        </footer>
       </article>
     </div>
   );
