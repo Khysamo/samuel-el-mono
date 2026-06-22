@@ -22,9 +22,11 @@ export default function Home() {
           {posts.map((post) => (
             <li key={post.slug}>
               <Link href={`/blog/${post.slug}`} className="group block">
-                <time className="text-sm text-[var(--muted)]">
-                  {formatDate(post.date)}
-                </time>
+                <div className="flex items-center gap-3 text-sm text-[var(--muted)]">
+                  <time>{formatDate(post.date)}</time>
+                  <span>·</span>
+                  <span>{post.readingTime}</span>
+                </div>
                 <h2 className="mt-1 text-xl font-semibold group-hover:opacity-70 transition-opacity">
                   {post.title}
                 </h2>

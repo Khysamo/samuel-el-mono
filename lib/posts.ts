@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { readingTime } from "@/lib/utils";
 
 const postsDir = path.join(process.cwd(), "content/posts");
 
@@ -9,6 +10,7 @@ export interface PostMeta {
   title: string;
   date: string;
   excerpt: string;
+  readingTime: string;
 }
 
 export interface Post extends PostMeta {
@@ -25,12 +27,13 @@ export function getAllPosts(): PostMeta[] {
       const slug = filename.replace(/\.(mdx|md)$/, "");
       const filePath = path.join(postsDir, filename);
       const raw = fs.readFileSync(filePath, "utf-8");
-      const { data } = matter(raw);
+      const { data, content } = matter(raw);
       return {
         slug,
         title: data.title ?? slug,
         date: data.date ? (data.date instanceof Date ? data.date.toISOString().split("T")[0] : String(data.date)) : "",
         excerpt: data.excerpt ?? "",
+        readingTime: readingTime(content),
       };
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -45,8 +48,9 @@ export function getPost(slug: string): Post {
   return {
     slug,
     title: data.title ?? slug,
-    date: data.date ? String(data.date) : "",
+    date: data.date ? (data.date instanceof Date ? data.date.toISOString().split("T")[0] : String(data.date)) : "",
     excerpt: data.excerpt ?? "",
+    readingTime: readingTime(content),
     content,
   };
 }
