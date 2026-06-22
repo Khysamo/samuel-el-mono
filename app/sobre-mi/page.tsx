@@ -1,8 +1,23 @@
 import type { Metadata } from "next";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://samuel-el-mono.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Sobre mí · Samuel el Mono",
+  title: "Sobre mí",
   description: "Quién es Samuel el Mono y por qué escribe todos los días.",
+  openGraph: {
+    title: "Sobre mí · Samuel el Mono",
+    description: "Quién es Samuel el Mono y por qué escribe todos los días.",
+    url: `${siteUrl}/sobre-mi`,
+    siteName: "Samuel el Mono",
+    locale: "es_MX",
+    type: "profile",
+  },
+  twitter: {
+    card: "summary",
+    title: "Sobre mí · Samuel el Mono",
+    description: "Quién es Samuel el Mono y por qué escribe todos los días.",
+  },
 };
 
 export default function SobreMi() {

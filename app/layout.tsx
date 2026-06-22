@@ -10,9 +10,28 @@ const lora = Lora({
   variable: "--font-lora",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://samuel-el-mono.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Samuel el Mono",
-  description: "Pensamientos, retos y progreso diario.",
+  title: {
+    default: "Samuel el Mono",
+    template: "%s · Samuel el Mono",
+  },
+  description: "Pensamientos, retos y progreso. Todos los días.",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: "Samuel el Mono",
+    description: "Pensamientos, retos y progreso. Todos los días.",
+    url: siteUrl,
+    siteName: "Samuel el Mono",
+    locale: "es_MX",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Samuel el Mono",
+    description: "Pensamientos, retos y progreso. Todos los días.",
+  },
 };
 
 export default function RootLayout({

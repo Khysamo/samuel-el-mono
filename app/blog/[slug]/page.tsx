@@ -15,9 +15,28 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://samuel-el-mono.vercel.app";
   try {
     const post = getPost(slug);
-    return { title: `${post.title} · Samuel el Mono`, description: post.excerpt };
+    return {
+      title: post.title,
+      description: post.excerpt,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt,
+        url: `${siteUrl}/blog/${slug}`,
+        siteName: "Samuel el Mono",
+        locale: "es_MX",
+        type: "article",
+        publishedTime: post.date,
+        authors: ["Samuel"],
+      },
+      twitter: {
+        card: "summary",
+        title: post.title,
+        description: post.excerpt,
+      },
+    };
   } catch {
     return { title: "Samuel el Mono" };
   }
