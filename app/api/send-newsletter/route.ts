@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
-import { getPost, formatDate } from "@/lib/posts";
+import { getPost } from "@/lib/posts";
+import { formatDate } from "@/lib/utils";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -55,25 +56,35 @@ export async function POST(request: Request) {
     </div>
   `;
 
-  const { data, error } = await resend.broadcasts.create({
-    audienceId,
-    from: "Samuel el Mono <onboarding@resend.dev>",
-    subject: post.title,
-    html,
-    name: `Post: ${post.title}`,
-  });
+  const { data: contactsData, error: contactsError } = await resend.contacts.list({ audienceId });
 
-  if (error || !data) {
-    console.error("Error creando broadcast:", error);
-    return NextResponse.json({ error: "Error al crear el broadcast", detail: error }, { status: 500 });
+  if (contactsError || !contactsData) {
+    console.error("Error obteniendo contactos:", contactsError);
+    return NextResponse.json({ error: "Error al obtener suscriptores", detail: contactsError }, { status: 500 });
   }
 
-  const { error: sendError } = await resend.broadcasts.send(data.id);
+  const subscribers = contactsData.data.filter((c) => !c.unsubscribed);
 
-  if (sendError) {
-    console.error("Error enviando broadcast:", sendError);
-    return NextResponse.json({ error: "Error al enviar el broadcast", detail: sendError }, { status: 500 });
+  if (subscribers.length === 0) {
+    return NextResponse.json({ error: "No hay suscriptores activos" }, { status: 400 });
   }
 
-  return NextResponse.json({ success: true, broadcastId: data.id });
+  const sends = await Promise.all(
+    subscribers.map((contact) =>
+      resend.emails.send({
+        from: "Samuel el Mono <onboarding@resend.dev>",
+        to: contact.email,
+        subject: post.title,
+        html,
+      })
+    )
+  );
+
+  const failed = sends.filter((s) => s.error);
+  if (failed.length > 0) {
+    console.error("Algunos emails fallaron:", failed);
+    return NextResponse.json({ error: `${failed.length} emails fallaron de ${subscribers.length}`, detail: failed[0].error }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true, sent: subscribers.length });
 }

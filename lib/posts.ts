@@ -29,7 +29,7 @@ export function getAllPosts(): PostMeta[] {
       return {
         slug,
         title: data.title ?? slug,
-        date: data.date ? String(data.date) : "",
+        date: data.date ? (data.date instanceof Date ? data.date.toISOString().split("T")[0] : String(data.date)) : "",
         excerpt: data.excerpt ?? "",
       };
     })
@@ -51,13 +51,3 @@ export function getPost(slug: string): Post {
   };
 }
 
-export function formatDate(dateStr: string): string {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "UTC",
-  });
-}

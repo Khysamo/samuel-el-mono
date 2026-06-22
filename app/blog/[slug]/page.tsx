@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getPost, getAllPosts, formatDate } from "@/lib/posts";
+import { getPost, getAllPosts } from "@/lib/posts";
+import { formatDate } from "@/lib/utils";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { notFound } from "next/navigation";
 

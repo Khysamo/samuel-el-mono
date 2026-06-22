@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatDate } from "@/lib/utils";
 
 interface Post {
   slug: string;
@@ -76,7 +77,7 @@ export default function AdminClient({ posts }: { posts: Post[] }) {
             className="flex items-center justify-between gap-4 border border-[var(--border)] rounded-lg px-5 py-4"
           >
             <div className="min-w-0">
-              <p className="text-xs text-[var(--muted)] mb-0.5">{post.date}</p>
+              <p className="text-xs text-[var(--muted)] mb-0.5">{formatDate(post.date)}</p>
               <p className="font-medium text-[var(--foreground)] truncate">{post.title}</p>
             </div>
 
