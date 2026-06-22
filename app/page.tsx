@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllPosts, formatDate } from "@/lib/posts";
+import SubscribeForm from "@/components/SubscribeForm";
 
 export default function Home() {
   const posts = getAllPosts();
@@ -36,6 +37,8 @@ export default function Home() {
           ))}
         </ul>
       )}
+
+      <SubscribeForm />
     </div>
   );
 }
