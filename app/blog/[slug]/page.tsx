@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getPost, getAllPosts } from "@/lib/posts";
-import { formatDate } from "@/lib/utils";
+import { formatDate, readingTime } from "@/lib/utils";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { notFound } from "next/navigation";
 
@@ -67,9 +67,11 @@ export default async function PostPage({
 
       <article>
         <header className="mb-10">
-          <time className="text-sm text-[var(--muted)]">
-            {formatDate(post.date)}
-          </time>
+          <div className="flex items-center gap-3 text-sm text-[var(--muted)]">
+            <time>{formatDate(post.date)}</time>
+            <span>·</span>
+            <span>{readingTime(post.content)}</span>
+          </div>
           <h1 className="mt-2 text-3xl font-semibold leading-tight">
             {post.title}
           </h1>
